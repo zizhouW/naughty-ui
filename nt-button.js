@@ -14,6 +14,11 @@ class NaughtyButton extends HTMLElement {
                 border-radius: 16px;
                 color: #fff;
                 cursor: pointer;
+                position: unset;
+                -webkit-transition: all 0.1s ease-in-out 0s;
+                -moz-transition: all 0.1s ease-in-out 0s;
+                -o-transition: all 0.1s ease-in-out 0s;
+                transition: all 0.1s ease-in-out 0s;
             }
             .nt-button:hover, .nt-button:focus {
                 outline: none;
@@ -48,9 +53,12 @@ class NaughtyButton extends HTMLElement {
         return () => undefined;
     }
     connectedCallback() {
-        this._button = this.shadowRoot.querySelector(".nt-button");
-        this._button.addEventListener('mouseenter', this._teleport.bind(this));
-        this._button.addEventListener('click', this.onClick.bind(this));
+        const button = this.shadowRoot.querySelector(".nt-button");
+        button.addEventListener('mouseenter', this._teleport.bind(this));
+        button.addEventListener('click', this.onClick.bind(this));
+        button.style.left = `${button.getBoundingClientRect().left}px`;
+        button.style.top = `${button.getBoundingClientRect().top}px`;
+        this._button = button;
     }
     disconnectedCallback() {
         this._button && this._button.removeEventListener('mouseenter', this._move);
@@ -70,11 +78,11 @@ class NaughtyButton extends HTMLElement {
         if (this.naughty && !this.disabled) {
             const button = this.shadowRoot.querySelector(".nt-button");
             setTimeout(() => {
-                button.style.position = 'absolute';
                 button.style.left = `${Math.random() * (
                     window.innerWidth - button.getBoundingClientRect().width)}px`;
                 button.style.top = `${Math.random() * (
                     window.innerHeight - button.getBoundingClientRect().height)}px`;
+                button.style.position = 'absolute';
             }, 100);
         }
     }
